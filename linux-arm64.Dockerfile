@@ -41,6 +41,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     sqlite3 \
     fontconfig \
     libpng16-16 \
+    libbrotli1 \
     ffmpeg \
  && rm -rf /var/lib/apt/lists/*
 
@@ -69,6 +70,7 @@ COPY --from=jellyfin-deps /usr/lib/${LIB_DIR}/libfontconfig.so.* \
                           /usr/lib/${LIB_DIR}/libfreetype.so.* \
                           /usr/lib/${LIB_DIR}/libexpat.so.* \
                           /usr/lib/${LIB_DIR}/libpng16.so.* \
+                          /usr/lib/${LIB_DIR}/libbrotli*.so.* \
                           /usr/lib/${LIB_DIR}/
 COPY --from=jellyfin-deps /etc/fonts /etc/fonts
 COPY --from=jellyfin-deps /usr/share/fontconfig /usr/share/fontconfig
