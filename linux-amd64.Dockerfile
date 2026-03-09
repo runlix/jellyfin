@@ -38,11 +38,19 @@ FROM ${BUILDER_IMAGE}:${BUILDER_TAG}@${BUILDER_DIGEST} AS jellyfin-deps
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    gnupg \
+ && mkdir -p /etc/apt/keyrings \
+ && curl -fsSL "https://repo.jellyfin.org/jellyfin_team.gpg.key" | gpg --dearmor -o /etc/apt/keyrings/jellyfin.gpg \
+ && chmod a+r /etc/apt/keyrings/jellyfin.gpg \
+ && echo "deb [signed-by=/etc/apt/keyrings/jellyfin.gpg] https://repo.jellyfin.org/debian bookworm main" > /etc/apt/sources.list.d/jellyfin.list \
+ && apt-get update && apt-get install -y --no-install-recommends \
     sqlite3 \
     fontconfig \
     libpng16-16 \
     libbrotli1 \
-    ffmpeg \
+    jellyfin-ffmpeg7 \
  && rm -rf /var/lib/apt/lists/*
 
 # STAGE 3 — distroless final image
@@ -55,11 +63,11 @@ ENV JELLYFIN_CONFIG_DIR=/config/config
 ENV JELLYFIN_LOG_DIR=/config/log
 ENV JELLYFIN_CACHE_DIR=/cache
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV JELLYFIN_FFMPEG=/usr/lib/jellyfin-ffmpeg/ffmpeg
 
 COPY --from=fetch /app /app
 COPY --from=jellyfin-deps /usr/bin/sqlite3 /usr/bin/sqlite3
-COPY --from=jellyfin-deps /usr/bin/ffmpeg /usr/bin/ffmpeg
-COPY --from=jellyfin-deps /usr/bin/ffprobe /usr/bin/ffprobe
+COPY --from=jellyfin-deps /usr/lib/jellyfin-ffmpeg /usr/lib/jellyfin-ffmpeg
 COPY --from=jellyfin-deps /lib/${LIB_DIR}/ /lib/${LIB_DIR}/
 COPY --from=jellyfin-deps /usr/lib/${LIB_DIR}/ /usr/lib/${LIB_DIR}/
 COPY --from=jellyfin-deps /etc/fonts /etc/fonts

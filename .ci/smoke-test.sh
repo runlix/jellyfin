@@ -105,6 +105,25 @@ fi
 echo -e "${GREEN}✅ Container is running${NC}"
 echo ""
 
+# Verify ffmpeg binaries exist and are executable in the image
+echo -e "${BLUE}🎬 Verifying ffmpeg binaries...${NC}"
+if docker exec "${CONTAINER_NAME}" /usr/lib/jellyfin-ffmpeg/ffmpeg -version >/dev/null 2>&1; then
+  echo -e "${GREEN}✅ /usr/lib/jellyfin-ffmpeg/ffmpeg is executable${NC}"
+else
+  echo -e "${RED}❌ /usr/lib/jellyfin-ffmpeg/ffmpeg failed to execute${NC}"
+  docker logs "${CONTAINER_NAME}" 2>&1 | tail -40
+  exit 1
+fi
+
+if docker exec "${CONTAINER_NAME}" /usr/lib/jellyfin-ffmpeg/ffprobe -version >/dev/null 2>&1; then
+  echo -e "${GREEN}✅ /usr/lib/jellyfin-ffmpeg/ffprobe is executable${NC}"
+else
+  echo -e "${RED}❌ /usr/lib/jellyfin-ffmpeg/ffprobe failed to execute${NC}"
+  docker logs "${CONTAINER_NAME}" 2>&1 | tail -40
+  exit 1
+fi
+echo ""
+
 # Check logs for critical errors
 echo -e "${BLUE}📋 Analyzing container logs...${NC}"
 LOGS=$(docker logs "${CONTAINER_NAME}" 2>&1)
