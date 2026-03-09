@@ -54,6 +54,8 @@ ENV JELLYFIN_DATA_DIR=/config/data
 ENV JELLYFIN_CONFIG_DIR=/config/config
 ENV JELLYFIN_LOG_DIR=/config/log
 ENV JELLYFIN_CACHE_DIR=/cache
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
 
 COPY --from=fetch /app /app
 COPY --from=jellyfin-deps /usr/bin/sqlite3 /usr/bin/sqlite3
@@ -63,6 +65,8 @@ COPY --from=jellyfin-deps /lib/${LIB_DIR}/ /lib/${LIB_DIR}/
 COPY --from=jellyfin-deps /usr/lib/${LIB_DIR}/ /usr/lib/${LIB_DIR}/
 COPY --from=jellyfin-deps /etc/fonts /etc/fonts
 COPY --from=jellyfin-deps /usr/share/fontconfig /usr/share/fontconfig
+COPY --from=jellyfin-deps /lib/ld-linux-aarch64.so.1 /lib/ld-linux-aarch64.so.1
+
 
 WORKDIR /app/jellyfin
 EXPOSE 8096
