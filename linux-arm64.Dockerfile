@@ -40,6 +40,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get update && apt-get install -y --no-install-recommends \
     sqlite3 \
     fontconfig \
+    libpng16-16 \
     ffmpeg \
  && rm -rf /var/lib/apt/lists/*
 
@@ -67,6 +68,7 @@ COPY --from=jellyfin-deps /usr/lib/${LIB_DIR}/libavcodec.so.* \
 COPY --from=jellyfin-deps /usr/lib/${LIB_DIR}/libfontconfig.so.* \
                           /usr/lib/${LIB_DIR}/libfreetype.so.* \
                           /usr/lib/${LIB_DIR}/libexpat.so.* \
+                          /usr/lib/${LIB_DIR}/libpng16.so.* \
                           /usr/lib/${LIB_DIR}/
 COPY --from=jellyfin-deps /etc/fonts /etc/fonts
 COPY --from=jellyfin-deps /usr/share/fontconfig /usr/share/fontconfig
