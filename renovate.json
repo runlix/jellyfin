@@ -1,15 +1,19 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Renovate configuration for docker-matrix.json updates",
+  "description": "Renovate configuration for Jellyfin release branch docker-matrix updates",
   "extends": [
     "config:recommended"
   ],
-  "baseBranches": ["release"],
+  "baseBranches": [
+    "release"
+  ],
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Update Debian builder images (BUILDER_TAG + BUILDER_DIGEST) - https://docs.renovatebot.com/modules/manager/regex/",
-      "fileMatch": ["^\\.ci/docker-matrix\\.json$"],
+      "description": "Update Debian builder images (BUILDER_TAG + BUILDER_DIGEST)",
+      "fileMatch": [
+        "^\\.ci/docker-matrix\\.json$"
+      ],
       "matchStrings": [
         "\\\"BUILDER_TAG\\\"\\s*:\\s*\\\"(?<currentValue>[^\\\"]+)\\\"[\\s\\S]*?\\\"BUILDER_DIGEST\\\"\\s*:\\s*\\\"(?<currentDigest>sha256:[a-f0-9]{64})\\\""
       ],
@@ -18,8 +22,10 @@
     },
     {
       "customType": "regex",
-      "description": "Update Distroless runtime base images (BASE_TAG + BASE_DIGEST) - https://docs.renovatebot.com/modules/datasource/docker/",
-      "fileMatch": ["^\\.ci/docker-matrix\\.json$"],
+      "description": "Update Distroless runtime base images (BASE_TAG + BASE_DIGEST)",
+      "fileMatch": [
+        "^\\.ci/docker-matrix\\.json$"
+      ],
       "matchStrings": [
         "\\\"BASE_TAG\\\"\\s*:\\s*\\\"(?<currentValue>[^\\\"]+)\\\"[\\s\\S]*?\\\"BASE_DIGEST\\\"\\s*:\\s*\\\"(?<currentDigest>sha256:[a-f0-9]{64})\\\""
       ],
@@ -28,8 +34,10 @@
     },
     {
       "customType": "regex",
-      "description": "Update Jellyfin version from GitHub releases - https://docs.renovatebot.com/modules/datasource/github-releases/",
-      "fileMatch": ["^\\.ci/docker-matrix\\.json$"],
+      "description": "Update Jellyfin version from GitHub releases",
+      "fileMatch": [
+        "^\\.ci/docker-matrix\\.json$"
+      ],
       "matchStrings": [
         "\\\"version\\\"\\s*:\\s*\\\"(?<currentValue>[^\\\"]+)\\\""
       ],
@@ -39,40 +47,74 @@
     },
     {
       "customType": "regex",
-      "description": "Update Jellyfin package URLs from GitHub releases",
-      "fileMatch": ["^\\.ci/docker-matrix\\.json$"],
-      "matchStrings": [
-        "\\\"PACKAGE_URL\\\"\\s*:\\s*\\\"https://github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/v?(?<currentValue>[^/]+)/[^\\\"]+\\\""
+      "description": "Update Jellyfin amd64 package URL from release version",
+      "fileMatch": [
+        "^\\.ci/docker-matrix\\.json$"
       ],
+      "matchStrings": [
+        "\\\"PACKAGE_URL\\\"\\s*:\\s*\\\"https://repo\\.jellyfin\\.org/files/server/linux/stable/v(?<currentValue>[^/]+)/amd64/jellyfin_[^\\\"]+\\\""
+      ],
+      "depNameTemplate": "jellyfin/jellyfin",
       "datasourceTemplate": "github-releases",
-      "extractVersionTemplate": "^v?(?<version>.*)$"
+      "extractVersionTemplate": "^v?(?<version>.*)$",
+      "autoReplaceStringTemplate": "\"PACKAGE_URL\": \"https://repo.jellyfin.org/files/server/linux/stable/v{{{newValue}}}/amd64/jellyfin_{{{newValue}}}-amd64.tar.gz\""
+    },
+    {
+      "customType": "regex",
+      "description": "Update Jellyfin arm64 package URL from release version",
+      "fileMatch": [
+        "^\\.ci/docker-matrix\\.json$"
+      ],
+      "matchStrings": [
+        "\\\"PACKAGE_URL\\\"\\s*:\\s*\\\"https://repo\\.jellyfin\\.org/files/server/linux/stable/v(?<currentValue>[^/]+)/arm64/jellyfin_[^\\\"]+\\\""
+      ],
+      "depNameTemplate": "jellyfin/jellyfin",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v?(?<version>.*)$",
+      "autoReplaceStringTemplate": "\"PACKAGE_URL\": \"https://repo.jellyfin.org/files/server/linux/stable/v{{{newValue}}}/arm64/jellyfin_{{{newValue}}}-arm64.tar.gz\""
     }
   ],
   "packageRules": [
     {
-      "description": "Group all docker-matrix.json updates into daily PRs",
-      "matchFileNames": ["**/.ci/docker-matrix.json"],
+      "description": "Group docker-matrix updates into daily PRs",
+      "matchFileNames": [
+        "**/.ci/docker-matrix.json"
+      ],
       "groupName": "Docker base images",
-      "schedule": ["before 3am"]
+      "schedule": [
+        "before 3am"
+      ]
     },
     {
-      "description": "Separate Debian builder updates - https://docs.renovatebot.com/configuration-options/#packagerules",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["docker.io/library/debian"],
+      "description": "Separate Debian builder updates",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "docker.io/library/debian"
+      ],
       "groupName": "Debian builder",
       "commitMessageTopic": "Debian builder image"
     },
     {
-      "description": "Separate Distroless runtime base updates",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["ghcr.io/runlix/distroless-runtime"],
+      "description": "Separate Distroless runtime updates",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/runlix/distroless-runtime"
+      ],
       "groupName": "Distroless runtime",
       "commitMessageTopic": "Distroless runtime base image"
     },
     {
-      "description": "Group Jellyfin version and package URL updates with auto-merge - https://docs.renovatebot.com/key-concepts/automerge/",
-      "matchDatasources": ["github-releases"],
-      "matchPackageNames": ["jellyfin/jellyfin"],
+      "description": "Group Jellyfin release version/url updates with automerge",
+      "matchDatasources": [
+        "github-releases"
+      ],
+      "matchPackageNames": [
+        "jellyfin/jellyfin"
+      ],
       "groupName": "Jellyfin release",
       "commitMessageTopic": "Jellyfin version",
       "automerge": true,
@@ -80,9 +122,13 @@
       "automergeStrategy": "squash"
     },
     {
-      "description": "Auto-merge digest-only updates (security patches) - https://docs.renovatebot.com/key-concepts/automerge/",
-      "matchFileNames": ["**/.ci/docker-matrix.json"],
-      "matchUpdateTypes": ["digest"],
+      "description": "Auto-merge digest-only updates",
+      "matchFileNames": [
+        "**/.ci/docker-matrix.json"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ],
       "automerge": true,
       "automergeType": "pr",
       "automergeStrategy": "squash"
@@ -91,7 +137,10 @@
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "🔄 Dependency Updates Dashboard",
   "dependencyDashboardApproval": false,
-  "labels": ["dependencies", "docker"],
+  "labels": [
+    "dependencies",
+    "docker"
+  ],
   "timezone": "UTC",
   "prConcurrentLimit": 3,
   "prHourlyLimit": 1
