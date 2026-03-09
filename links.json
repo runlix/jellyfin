@@ -1,0 +1,12 @@
+{
+  "links": [
+    {
+      "name": "Upstream Project",
+      "url": "https://github.com/jellyfin/jellyfin"
+    },
+    {
+      "name": "Jellyfin Documentation",
+      "url": "https://jellyfin.org/docs/"
+    }
+  ]
+}
