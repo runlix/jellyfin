@@ -59,19 +59,8 @@ COPY --from=fetch /app /app
 COPY --from=jellyfin-deps /usr/bin/sqlite3 /usr/bin/sqlite3
 COPY --from=jellyfin-deps /usr/bin/ffmpeg /usr/bin/ffmpeg
 COPY --from=jellyfin-deps /usr/bin/ffprobe /usr/bin/ffprobe
-COPY --from=jellyfin-deps /usr/lib/${LIB_DIR}/libsqlite3.so.* /usr/lib/${LIB_DIR}/
-COPY --from=jellyfin-deps /usr/lib/${LIB_DIR}/libavcodec.so.* \
-                          /usr/lib/${LIB_DIR}/libavformat.so.* \
-                          /usr/lib/${LIB_DIR}/libavutil.so.* \
-                          /usr/lib/${LIB_DIR}/libswresample.so.* \
-                          /usr/lib/${LIB_DIR}/libswscale.so.* \
-                          /usr/lib/${LIB_DIR}/
-COPY --from=jellyfin-deps /usr/lib/${LIB_DIR}/libfontconfig.so.* \
-                          /usr/lib/${LIB_DIR}/libfreetype.so.* \
-                          /usr/lib/${LIB_DIR}/libexpat.so.* \
-                          /usr/lib/${LIB_DIR}/libpng16.so.* \
-                          /usr/lib/${LIB_DIR}/libbrotli*.so.* \
-                          /usr/lib/${LIB_DIR}/
+COPY --from=jellyfin-deps /lib/${LIB_DIR}/ /lib/${LIB_DIR}/
+COPY --from=jellyfin-deps /usr/lib/${LIB_DIR}/ /usr/lib/${LIB_DIR}/
 COPY --from=jellyfin-deps /etc/fonts /etc/fonts
 COPY --from=jellyfin-deps /usr/share/fontconfig /usr/share/fontconfig
 
