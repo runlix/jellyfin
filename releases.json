@@ -1,1 +1,12 @@
-{}
+{
+  "jellyfin": {
+    "version": "10.11.6",
+    "sha": "904b582e88d58db13d615d3514a3683767c33fe5",
+    "short_sha": "904b582",
+    "timestamp": "2026-03-09T17:55:44Z",
+    "manifests": [
+      "10.11.6-debug",
+      "10.11.6-stable"
+    ]
+  }
+}
