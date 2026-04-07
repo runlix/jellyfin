@@ -1,78 +1,65 @@
 # Jellyfin
 
-Kubernetes-native distroless Docker image for [Jellyfin](https://github.com/jellyfin/jellyfin) - a media server.
+`jellyfin` publishes the Runlix container image for [Jellyfin](https://github.com/jellyfin/jellyfin).
 
-## Purpose
+The current published image name is:
 
-Provides a minimal, secure Docker image for running Jellyfin in Kubernetes environments. Built on the `distroless-runtime` base image with only the dependencies required for Jellyfin to run.
-
-## Features
-
-- Distroless base (no shell, minimal attack surface)
-- Kubernetes-native permissions (no s6-overlay)
-- Read-only root filesystem support
-- Non-root execution
-- Official Jellyfin runtime paths (`/config`, `/cache`)
-
-## Usage
-
-### Docker
-
-```bash
-docker run -d \
-  --name jellyfin \
-  -p 8096:8096 \
-  -v /path/to/config:/config \
-  -v /path/to/cache:/cache \
-  ghcr.io/runlix/jellyfin:release-latest
+```text
+ghcr.io/runlix/jellyfin
 ```
 
-### Kubernetes
+Use a versioned stable manifest tag from [release.json](release.json):
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: jellyfin
-spec:
-  template:
-    spec:
-      containers:
-      - name: jellyfin
-        image: ghcr.io/runlix/jellyfin:release-latest
-        ports:
-        - containerPort: 8096
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: cache
-          mountPath: /cache
-        securityContext:
-          runAsUser: 65532
-          runAsGroup: 65532
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop: ["ALL"]
-      volumes:
-      - name: config
-        persistentVolumeClaim:
-          claimName: jellyfin-config
-      - name: cache
-        persistentVolumeClaim:
-          claimName: jellyfin-cache
+```dockerfile
+FROM ghcr.io/runlix/jellyfin:<version>-stable
 ```
 
-## Tags
+The authoritative published tags, digests, and source revision live in [release.json](release.json).
 
-See [tags.json](tags.json) for available tags.
+## What's Included
+
+- Jellyfin upstream binaries
+- `sqlite3`
+- `jellyfin-ffmpeg7`
+- shared runtime libraries from `distroless-runtime-v2-canary`
+
+The image keeps the distroless runtime model while layering in the Jellyfin-specific binaries and media tooling it needs.
+
+## Branch Layout
+
+`main` owns metadata and automation config:
+
+- `README.md`
+- `links.json`
+- `release.json`
+- `renovate.json`
+- `.github/workflows/validate-release-metadata.yml`
+
+`release` owns build and publish inputs:
+
+- `.ci/build.json`
+- `.ci/smoke-test.sh`
+- `linux-*.Dockerfile`
+- `.github/workflows/validate-build.yml`
+- `.github/workflows/publish-release.yml`
+
+## Release Flow
+
+Changes merge to `release`, where `Publish Release` builds the versioned `stable` and `debug` multi-arch manifests, attests them, optionally sends Telegram, and opens the sync PR back to `main`.
+
+`main` validates metadata and config-only changes with `Validate Release Metadata`.
 
 ## Environment Variables
 
-- `JELLYFIN_DATA_DIR`: Data directory (default: `/config/data`)
-- `JELLYFIN_CONFIG_DIR`: Config directory (default: `/config/config`)
-- `JELLYFIN_LOG_DIR`: Log directory (default: `/config/log`)
-- `JELLYFIN_CACHE_DIR`: Cache directory (default: `/cache`)
+- `JELLYFIN_DATA_DIR`: data directory, default `/config/data`
+- `JELLYFIN_CONFIG_DIR`: config directory, default `/config/config`
+- `JELLYFIN_LOG_DIR`: log directory, default `/config/log`
+- `JELLYFIN_CACHE_DIR`: cache directory, default `/cache`
+
+## Ports
+
+- `8096/tcp`: Jellyfin HTTP endpoint
 
 ## License
 
-GPL-2.0 (upstream Jellyfin license)
+GPL-2.0
