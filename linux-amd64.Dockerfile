@@ -1,4 +1,4 @@
-ARG BUILDER_REF="docker.io/library/debian:bookworm-slim@sha256:1def178129dfb5f24db43afbf2fcac04530012e3264ba4ff81c71184e17a9ee4"
+ARG BUILDER_REF="docker.io/library/debian:bookworm-slim@sha256:63a496b5d3b99214b39f5ed70eb71a61e590a77979c79cbee4faf991f8c0783e"
 ARG BASE_REF="ghcr.io/runlix/distroless-runtime-v2-canary:stable@sha256:538b0fb6f48b9f65f87633ac1b5764b9199af0b448ed94a0f5bbb15320679cbf"
 ARG PACKAGE_URL="https://repo.jellyfin.org/files/server/linux/stable/v10.11.6/amd64/jellyfin_10.11.6-amd64.tar.gz"
 
