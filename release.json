@@ -1,13 +1,13 @@
 {
   "image": "ghcr.io/runlix/jellyfin",
   "version": "12.1",
-  "sha": "6ee21d4717baa2e768355c03931fea8405645718",
-  "short_sha": "6ee21d4",
-  "published_at": "2026-09-19T05:07:21Z",
+  "sha": "168db1675d369e0ae85d284a14e0de93c66831ee",
+  "short_sha": "168db16",
+  "published_at": "2026-09-19T18:48:39Z",
   "manifests": [
     {
       "tag": "10.11.6-debug",
-      "digest": "sha256:9ff4d37dd78a09eb93d9cdd0740ee862102afd22fdcfc8e076f693335850a38e",
+      "digest": "sha256:d4012baabfddd8859a3a60036b4c20f251ba2195c80cde2b8aa921985da9ed68",
       "platforms": [
         "linux/amd64",
         "linux/arm64"
@@ -15,7 +15,7 @@
     },
     {
       "tag": "10.11.6-stable",
-      "digest": "sha256:d0b6d147b633e7d4e715df00cefe62f1e40ab7e19f7b22b10612c8958b465d78",
+      "digest": "sha256:b5b867b44a357e4b257f459d9345305af045fa55538d365d8df8beb6e9f23418",
       "platforms": [
         "linux/amd64",
         "linux/arm64"
